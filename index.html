@@ -16,24 +16,25 @@
 #values { position:relative;font-size:400%;text-align:center;margin: 0 auto;z-index:0; }
 .name { overflow:hidden;display:block; }
 #names { display:none;padding:5px; }
-#namesbox { min-height:400px;font-size:32px;color:#333;resize:none;border:1px solid #F39C12; }
+#namesbox { min-height:400px;font-size:32px;color:#000;resize:none; }
 .extra { font-size:16px;margin-top:20px; }
-#result1 { background:#000;color:#fbe34b;padding:20px;z-index:10;margin-top:-150px; }
-body { background:#F1C40F url(img/bg-noise-orange.png); }
+#result1 {background:#000;color:#fff ;padding:20px;z-index:10;margin-top:-150px;margin-bottom:20px;  }
+body { background:#ffffff}
 #varnote { font-size:40px;text-align:center;padding:30px; }
-.copyright { font-size:11px;font-family:Tahoma;color:#9B59B6; }
+.copyright { font-size:12px;font-family:Tahoma;color:#000;margin-top:150px }
 </style>
 
 </head>
 <body onload="reset();">
 
-  <div class="full-head" style="width:100%;background:#111 url(img/header-bg.png) repeat-x center top;border-bottom:1px solid #D35400;">
+ <!-- <div class="full-head" style="width:100%;background:#111 url(img/header-bg.png) repeat-x center top;border-bottom:1px solid #D35400;">-->
+  
 	<div class="row">
-		<div class="large-12 columns" style="padding-top:50px;background:#111 url(img/header-bg.png) repeat-x center top;z-index:20;">
+		<div class="large-12 columns" style="padding-top:50px;background:#fff; z-index:20;">
 		<ul class="button-group even-4">
       <li><a href="index.html" class="alert button" id="reset">Reset</a></li>
-			<li><button class="button" id="list" onclick="namelist();">Name List</button></li>
-			<li><button class="button" id="save" onclick="save();">Save &amp; Update</button></li>
+			<li><button class="button" id="list" onclick="namelist();">List</button></li>
+			<li><button class="button" id="save" onclick="save();">Update</button></li>
 			<li><button class="success button" id="go" onclick="go();">GO!</button></li>
     </ul>
 		</div>
@@ -42,9 +43,9 @@ body { background:#F1C40F url(img/bg-noise-orange.png); }
 
 	<div class="row">
 		<div class="large-12 columns">
-			<h3 style="text-align:center;margin-top:30px;" id="headline">Let's see who is The Lucky One?</h3>
+			<h3 style="text-align:center;margin-top:5px;" id="headline"></h3>
 			
-			<div id="varnote"><img src="img/logo.png"><div class="copyright">&copy; Coded by <strong>Heiswayi Nrird</strong>, June 2013</div></div>
+			<div id="varnote"><iframe src="https://giphy.com/embed/l4HnKwxpPDoPmL9bG" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/thisisgiphy-reaction-audience-l4HnKwxpPDoPmL9bG"></a></p><div class="copyright">&copy; Coded by <strong>Heiswayi Nrird</strong>, June 2013</div></div>
 			
       <div id="popdown">
       <div id="names" class="inbox"><textarea name="namesbox" id="namesbox"></textarea></div>
@@ -67,79 +68,50 @@ body { background:#F1C40F url(img/bg-noise-orange.png); }
   
 <script>
 var text;
-var names = new Array('Barbara McFell',
-                      'Tempo McKeteketly',
-                      'Maonga Irpaae',
-                      'Jose Tunisia',
-                      'Bob Bobson',
-                      'Harold Greenoff',
-                      'Jeff Penn',
-                      'Ewan Freedom',
-                      'Benjamin Turkin',
-                      'Robert Harper',
-                      'Sally Cladwell',
-                      'Gregory Tomson',
-                      'Benita Dano',
-                      'Tameka Chea',
-                      'Fernando Guntrum',
-                      'Cody Devita',
-                      'Margery Moloney',
-                      'Jessie Wagar',
-                      'Jessie Burkhard',
-                      'Cody Lamotte',
-                      'Tabatha Cantley',
-                      'Hugh Fullwood',
-                      'Emilia Janusz',
-                      'Erik Taketa',
-                      'Lenore Laughter',
-                      'Kathrine Palazzo',
-                      'Lonnie Garron',
-                      'Tyrone Shott',
-                      'Gay Duble',
-                      'Pearlie Newberg',
-                      'Clinton Rayl',
-                      'Louisa Strey',
-                      'Saundra Ingenito',
-                      'Fernando Jenkin',
-                      'Maricela Tonkin',
-                      'Allie Borjas',
-                      'Clinton Rickenbacker',
-                      'Cody Golay',
-                      'Jerri Tienda',
-                      'Nita Pippen',
-                      'Alejandra Bonhomme',
-                      'Nelson Eguia',
-                      'Rae Velasques',
-                      'Boyce Edeker',
-                      'Cedrick Culotti',
-                      'Elenora Nagindas',
-                      'Arletta Miran',
-                      'Alica Knudsvig',
-                      'Von Ostroot',
-                      'Tomika Nuesca',
-                      'Felton Pattinson',
-                      'Cristopher Laper',
-                      'Shonna Parrotta',
-                      'Sarina Macurdy',
-                      'Waylon Companie',
-                      'Shon Carratura',
-                      'Jae Kneser',
-                      'Janett Papiernik',
-                      'Lynwood Bellar',
-                      'Jeramy Contopoulos',
-                      'Hong Nederostek',
-                      'Gigi Mccarn',
-                      'Sid Mursko',
-                      'Bielser',
-                      'Jospeh Lustberg',
-                      'Spring Luckinbill',
-                      'Ciera Chionchio',
-                      'Marleen Litchard',
-                      'Eldridge Brynga',
-                      'Leif Dinho',
-                      'Gigi Kornblatt',
-                      'Idell Chagollan',
-                      'Michale Mcclod'
+var names = new Array('Aidan Moher',
+'Alex Garnett',
+'Allie Jardim',
+'Andie Tomlinson',
+'Bronwen Sprout',
+'Caron Rollins',
+'Caroline Daniels',
+'Dalys Barney',
+'Elizabeth Blackburn',
+'Elizabeth Padilla',
+'Elizabeth Wright',
+'Emily Mathews',
+'Farrah Little',
+'George Villavicencio',
+'Goran Ivaz',
+'Gordon Marshall',
+'Gwenda Bryan',
+'Janice Banser',
+'Jean Blackburn',
+'Jeff Davis',
+'Jessica Gallinger',
+'John Durno',
+'Jonathan Schatz',
+'Julie Cole',
+'Kathleen Reed',
+'Kevin Brash',
+'Larissa Ringham',
+'Marion Cross',
+'Mark Jordan',
+'Maryann Kempthorne',
+'Matt Huculak',
+'Michel Castagn̩e',
+'Michelle Ng',
+'Moriah Whitley',
+'Naomi Lloyd',
+'Patricia Pang',
+'Rebecca Dickson',
+'Richard Arias-Hernandez',
+'Sarah Ogden',
+'Scott Leslie',
+'Shirley Lew',
+'Steinunn Benjaminsson',
+'Thea Wilson-Scorgie',
+'Trevor Smith'
                       );
 
 function reset(){
@@ -152,79 +124,50 @@ function reset(){
     namesbreak = namesbreak.replace(/%20/g,' ');          
     }
     else   {
-      var names = new Array('Barbara McFell',
-                      'Tempo McKeteketly',
-                      'Maonga Irpaae',
-                      'Jose Tunisia',
-                      'Bob Bobson',
-                      'Harold Greenoff',
-                      'Jeff Penn',
-                      'Ewan Freedom',
-                      'Benjamin Turkin',
-                      'Robert Harper',
-                      'Sally Cladwell',
-                      'Gregory Tomson',
-                      'Benita Dano',
-                      'Tameka Chea',
-                      'Fernando Guntrum',
-                      'Cody Devita',
-                      'Margery Moloney',
-                      'Jessie Wagar',
-                      'Jessie Burkhard',
-                      'Cody Lamotte',
-                      'Tabatha Cantley',
-                      'Hugh Fullwood',
-                      'Emilia Janusz',
-                      'Erik Taketa',
-                      'Lenore Laughter',
-                      'Kathrine Palazzo',
-                      'Lonnie Garron',
-                      'Tyrone Shott',
-                      'Gay Duble',
-                      'Pearlie Newberg',
-                      'Clinton Rayl',
-                      'Louisa Strey',
-                      'Saundra Ingenito',
-                      'Fernando Jenkin',
-                      'Maricela Tonkin',
-                      'Allie Borjas',
-                      'Clinton Rickenbacker',
-                      'Cody Golay',
-                      'Jerri Tienda',
-                      'Nita Pippen',
-                      'Alejandra Bonhomme',
-                      'Nelson Eguia',
-                      'Rae Velasques',
-                      'Boyce Edeker',
-                      'Cedrick Culotti',
-                      'Elenora Nagindas',
-                      'Arletta Miran',
-                      'Alica Knudsvig',
-                      'Von Ostroot',
-                      'Tomika Nuesca',
-                      'Felton Pattinson',
-                      'Cristopher Laper',
-                      'Shonna Parrotta',
-                      'Sarina Macurdy',
-                      'Waylon Companie',
-                      'Shon Carratura',
-                      'Jae Kneser',
-                      'Janett Papiernik',
-                      'Lynwood Bellar',
-                      'Jeramy Contopoulos',
-                      'Hong Nederostek',
-                      'Gigi Mccarn',
-                      'Sid Mursko',
-                      'Bielser',
-                      'Jospeh Lustberg',
-                      'Spring Luckinbill',
-                      'Ciera Chionchio',
-                      'Marleen Litchard',
-                      'Eldridge Brynga',
-                      'Leif Dinho',
-                      'Gigi Kornblatt',
-                      'Idell Chagollan',
-                      'Michale Mcclod'
+      var names = new Array('Aidan Moher',
+'Alex Garnett',
+'Allie Jardim',
+'Andie Tomlinson',
+'Bronwen Sprout',
+'Caron Rollins',
+'Caroline Daniels',
+'Dalys Barney',
+'Elizabeth Blackburn',
+'Elizabeth Padilla',
+'Elizabeth Wright',
+'Emily Mathews',
+'Farrah Little',
+'George Villavicencio',
+'Goran Ivaz',
+'Gordon Marshall',
+'Gwenda Bryan',
+'Janice Banser',
+'Jean Blackburn',
+'Jeff Davis',
+'Jessica Gallinger',
+'John Durno',
+'Jonathan Schatz',
+'Julie Cole',
+'Kathleen Reed',
+'Kevin Brash',
+'Larissa Ringham',
+'Marion Cross',
+'Mark Jordan',
+'Maryann Kempthorne',
+'Matt Huculak',
+'Michel Castagn̩e',
+'Michelle Ng',
+'Moriah Whitley',
+'Naomi Lloyd',
+'Patricia Pang',
+'Rebecca Dickson',
+'Richard Arias-Hernandez',
+'Sarah Ogden',
+'Scott Leslie',
+'Shirley Lew',
+'Steinunn Benjaminsson',
+'Thea Wilson-Scorgie',
+'Trevor Smith'
                       );
     for(var i in names){
       name = names[i];
@@ -345,12 +288,12 @@ function standout(text){
 
         $('#result1').removeClass('name');
         $('.name').animate({opacity: .25});
-        $('#result1').animate({height: '+=60px'});
-        $('#result1').append('<div class="extra"><a class="small alert button" href="#" onClick="removevictim();">Remove name from list</a></div>');
+        $('#result1').animate({height: '+=55px'});
+        $('#result1').append('<div class="extra"><a class="small alert button" href="#" onClick="removevictim();">Remove</a></div>');
         $('#go').removeAttr('disabled','disabled');
         $('#list').removeAttr('disabled','disabled');
         $('#save').removeAttr('disabled','disabled');
-        $('#headline').text('Found the Winner!');
+        $('#headline').text('');
         $('#headline').slideDown();
 }
 
@@ -380,3 +323,5 @@ function removevictim(){
 
 </body>
 </html>
+
+

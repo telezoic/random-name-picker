@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Shrikhand|Gudea');
+
 *,
 *:before,
 *:after {
@@ -11,10 +13,10 @@ body {
 
 body {
   background: white;
-  color: #222222;
+  color: #000;
   padding: 0;
   margin: 0;
-  font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+  font-family: "Shrikhand", serif;
   font-weight: normal;
   font-style: normal;
   line-height: 1;
@@ -37,6 +39,8 @@ embed {
 img {
   -ms-interpolation-mode: bicubic; }
 
+
+.
 #map_canvas img,
 #map_canvas embed,
 #map_canvas object,
@@ -1219,7 +1223,7 @@ blockquote p {
   border-style: solid;
   border-width: 1px;
   cursor: pointer;
-  font-family: inherit;
+  font-family: "Gudea";
   font-weight: bold;
   line-height: 1;
   margin: 0 0 1.25em;
