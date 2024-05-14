@@ -1267,6 +1267,22 @@ blockquote p {
       background-color: #970b0e; }
     .button.alert:hover, .button.alert:focus {
       color: white; }
+  .button.yellow {
+    background-color: #f5d906;
+    border-color: #f5d906;
+    color: white; }
+    .button.yellow:hover, .button.alert:focus {
+      background-color: #f5d906; }
+    .button.yellow:hover, .button.alert:focus {
+      color: white; }
+  .button.orange {
+    background-color: #f57506;
+    border-color: #f57506;;
+    color: white; }
+    .button.orange:hover, .button.alert:focus {
+      background-color: #f57506;; }
+    .button.orange:hover, .button.alert:focus {
+          color: white; }
   .button.large {
     padding-top: 1em;
     padding-right: 2em;
