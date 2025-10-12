@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Random Name Picker</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.7.5/css/foundation.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <style>
+    #values {
+      position:relative;
+      font-size:400%;
+      text-align:center;
+      margin: 0 auto;
+      z-index:0;
+    }
+    .name {
+      overflow:hidden;
+      display:block;
+      color: #ffffff;
+    }
+    #result1 {
+      background:#81D6E3;
+      color:#fff;
+      padding:20px;
+      opacity: 0.9;
+    
+      font-weight: bold;
+      z-index:10;
+      margin-top:-150px;
+      margin-bottom:20px;
+      border-radius: 10px !important;
+    }
+    body {
+      background-image: url('img/bodysnatcher.webp');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-attachment: fixed;
+      position: relative;
+      min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.04);
+      z-index: -1;
+    }
+    div.large-12.columns {
+      font-size:25px;
+      text-align:center;
+      padding:30px;
+    }
+    #varnote {
+      font-size:25px;
+      text-align:center;
+      padding:30px;
+      margin-top: 1075px;
+      color: #000;
+    }
+    .copyright {
+      font-size:25px;
+      font-family:Tahoma;
+      color:#000;
+      margin-bottom: 25px;
+      text-align:left;
+    }
+    h3 {
+      color: #abc517;
+    }
+    .loading {
+      display: none;
+      text-align: center;
+      font-size: 24px;
+      margin: 20px 0;
+    }
+    .status-message {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .success {
+      background-color: #dff0d8;
+      color: #3c763d;
+    }
+    .error {
+      background-color: #f2dede;
+      color: #a94442;
+    }
+    .name-counter {
+      font-size: 18px;
+      color: #333;
+      padding: 10px 15px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 10px;
+    }
+    .top-bar-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .button-group.even-3 {
+      margin: 0;
+      border-radius: 10px;
+      overflow: hidden;
+      list-style: none; /* Add this line */
+    }
+
+    .button-group.even-3 li {
+      border-radius: 0;
+      list-style: none; /* Add this line */
+    }
+    .button-group.even-3 li:first-child button {
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+    .button-group.even-3 li:last-child a,
+    .button-group.even-3 li:last-child button {
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+    .button {
+      border-radius: 0;
+    }
+    .alert.button {
+      border-radius: 10px !important;
+    }
+    @media (max-width: 768px) {
+      .top-bar-section {
+        flex-direction: column;
+        gap: 15px;
+      }
+      .name-counter {
+        order: -1;
+      }
+      #values {
+        font-size: 300%;
+      }
+      .button-group.even-3 {
+        border-radius: 10px;
+        overflow: visible;
+      }
+      .button-group.even-3 li {
+        margin-bottom: 5px;
+        border-radius: 10px !important;
+      }
+      .button-group.even-3 li:last-child {
+        margin-bottom: 0;
+      }
+    }
+    @media (max-width: 480px) {
+      #values {
+        font-size: 200%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="row">
+    <div class="large-12 columns" style="padding-top:50px;z-index:20;">
+      <div class="top-bar-section">
+        <ul class="button-group even-3">
+          <li><button class="success button" id="go" onclick="go();">PICK NAME</button></li>
+          <li><button class="warning button" id="resetAll" onclick="resetAllNames();">RESET ALL NAMES</button></li>
+          <li><a href="https://github.com/YOUR_USERNAME/YOUR_REPO/edit/main/names.js" class="button" id="editSource" target="_blank">EDIT MASTER LIST</a></li>
+        </ul>
+        <div class="name-counter">
+          Available: <strong id="availableCount">0</strong> | Removed: <strong id="removedCount">0</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="large-12 columns">
+      <h3 style="text-align:center;margin-top:5px;" id="headline"></h3>
+      
+      <div class="loading" id="loading">Loading names...</div>
+      <div id="status-message"></div>
+      
+      <div id="varnote">
+        <div id="copyright">
+          <a href="https://www.flickr.com/photos/gozalewis/6206401095">image &nbsp; &vert; &nbsp; <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-2</a> &nbsp; &vert; &nbsp; Code - Heiswayi Nrird-June 2013</a>
+        </div>
+      </div>
+      
+      <div id="values"></div>
+    </div>
+  </div>
+  
+  <!-- Load master names from external JavaScript file -->
+  <script src="names.js"></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.7.5/js/foundation.min.js"></script>
+  <script>
+    $(document).foundation();
+    
+    let text = '';
+    let names = [];
+    let removedNames = [];
+
+    // Initialize the app
+    $(document).ready(function() {
+      loadNames();
+    });
+
+    // Load names with persistence
+    function loadNames() {
+      showLoading(true);
+      clearStatus();
+      
+      try {
+        const savedRemoved = localStorage.getItem('namePickerRemoved');
+        removedNames = savedRemoved ? JSON.parse(savedRemoved) : [];
+        
+        names = masterNames.filter(name => !removedNames.includes(name));
+        updateCounts();
+        
+      } catch (error) {
+        console.error('Error loading names:', error);
+        names = [...masterNames];
+        removedNames = [];
+        updateCounts();
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    // Update the counts display
+    function updateCounts() {
+      $('#availableCount').text(names.length);
+      $('#removedCount').text(removedNames.length);
+    }
+
+    // Save removed names to localStorage
+    function saveRemovedNames() {
+      localStorage.setItem('namePickerRemoved', JSON.stringify(removedNames));
+    }
+
+    // Reset all names 
+    function resetAllNames() {
+      removedNames = [];
+      saveRemovedNames();
+      loadNames();
+      //showStatus('All names reset!', 'success');
+    }
+
+    // Randomize array order
+    function randOrd() {
+      return (Math.round(Math.random()) - 0.5);
+    }
+
+    // random name function
+    function getRandomName() {
+      if (names.length === 0) {
+        return null;
+      }
+      const randomIndex = Math.floor(Math.random() * names.length);
+      return names[randomIndex];
+    }
+    function go() {
+      if (names.length === 0) {
+        showStatus('No names available! Reset to add all names back.', 'error');
+        return;
+      }
+      
+      $("#varnote").hide();
+      $('body').css({"overflow-y": "hidden"});
+      $('#go').attr('disabled', 'disabled');
+      $('#headline').slideUp();
+      
+      let count = 1;
+      $("div").remove("#result1");
+      
+      $("#values").show();
+      $(".name").show();
+      $("div").remove(".name");
+      $("div").remove(".extra");
+      
+      const newtop = names.length * 200 * -1;
+      $('#values').css({top: + newtop});
+      
+      names.sort(randOrd);
+      
+      // Create name elements
+      for(let i in names) {
+        if (names[i] === "" || typeof(names[i]) === "undefined") {
+          count = count - 1;
+        } else {
+          const name = names[i];
+          $('#values').append('<div id=result'+count+' class=name>'+name+'</div>');
+        }
+        count = count + 1;
+      }
+      
+      // Add two more sets for smooth animation
+      for(let i = 0; i < 2; i++) {
+        for(let name of names) {
+          if (name && name.trim() !== '') {
+            $('#values').append('<div class=name>'+name+'</div>');
+          }
+        }
+      }
+      
+      text = $('#result1').text();
+      $('#values').animate({top: '+176'}, 5000);
+      
+      setTimeout(function() {
+        standout(text);
+      }, 5000);
+    }
+    
+    // Highlight
+    function standout(text) {
+      $('#result1').removeClass('name');
+      $('.name').animate({opacity: .25});
+      $('#result1').animate({height: '+=55px'});
+      
+      // Use event delegation for the remove button
+      $('#result1').append('<div class="extra"><a class="small alert button remove-name-btn" href="#">Remove Name</a></div>');
+      
+      $('#go').removeAttr('disabled');
+      $('#headline').text('');
+      $('#headline').slideDown();
+    }
+    
+    // Remove name (persistent)
+    function removevictim() {
+      if (!removedNames.includes(text)) {
+        removedNames.push(text);
+        saveRemovedNames();
+      }
+      
+      loadNames();
+      
+      $('#result1').html("Removed");
+      $('#result1').fadeOut(1000, function() {
+        $("div").remove("#result1");
+      });
+      $("div").remove(".name");
+      $("div").remove(".extra");
+     // $('#headline').text('Name removed! Reset to restore.');
+    }
+
+    // Use event delegation for dynamically created remove buttons
+    $(document).on('click', '.remove-name-btn', function(e) {
+      e.preventDefault();
+      removevictim();
+    });
+
+    // Utility functions
+    function showLoading(show) {
+      $('#loading').toggle(show);
+    }
+    
+    function showStatus(message, type) {
+      $('#status-message').html(`<div class="status-message ${type}">${message}</div>`);
+      if (type === 'success') {
+        setTimeout(clearStatus, 3000);
+      }
+    }
+    
+    function clearStatus() {
+      $('#status-message').html('');
+    }
+  </script>
+</body>
+</html>
