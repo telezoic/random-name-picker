@@ -2,7 +2,7 @@
 const masterNames = [
 
 "Rebecca Ardron",
-"Mian shraf",
+"Mian Ashraf",
 "Janice Banser",
 "Rachel Burke",
 "Michel Castagné",
