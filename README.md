@@ -1,18 +1,18 @@
 # Random Name Picker
 
 
-This is a simple HTML tool written with JavaScript to randomly pick a name from a list. The name that has been picked is removable from the list. This is useful for indoor event/party.
+This is a random name picker with a Node.js API that stores the active name list in MinIO.
 
-What's new: CSS tweaks for our Code4Lib BC 2025 prize draw. 
+## Setup
+
+1. Install Node.js 20 or newer.
+2. Configure `.env` with `MINIO_ENDPOINT`, `MINIO_BUCKET`, `MINIO_REGION`, `MINIO_ACCESS_KEY`, and `MINIO_SECRET_KEY`.
+3. In the MinIO bucket, create `names.txt` and `namesbk.txt` as UTF-8 text files with one name per line. `namesbk.txt` is the reset source.
+4. Run `npm install`, then `npm start`.
+5. Open `http://localhost:3000`.
+
+Give the MinIO access key only `GetObject` access to `namesbk.txt` and `GetObject`/`PutObject` access to `names.txt`. The server reads and writes MinIO; do not put MinIO credentials in `index.html` or expose `.env`. Deploy the Node server (not just the static files) and place it behind appropriate access controls before using it with a publicly reachable bucket.
 
 ## License
 
 MIT License
-
-
-## Some Updates for C4LBC 2025
-
-- Styling
-- Removed some redundancies
-- Background Image
-- Names are now stored in `names.js` for easier edits

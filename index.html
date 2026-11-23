@@ -21,11 +21,14 @@
       color: #ffffff;
     }
     #result1 {
-      background:#81D6E3;
-      color:#fff;
+      /*background:#81D6E3;*/
+      color: #fff;
+      -webkit-text-stroke: 20px #000;
+      paint-order: stroke fill;
+      font-size: 175px;
       padding:20px;
       opacity: 0.9;
-    
+
       font-weight: bold;
       z-index:10;
       margin-top:-150px;
@@ -33,7 +36,7 @@
       border-radius: 10px !important;
     }
     body {
-      background-image: url('img/bodysnatcher.webp');
+      background-image: url('img/lg1.png');
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center center;
@@ -76,7 +79,9 @@
     .loading {
       display: none;
       text-align: center;
-      font-size: 24px;
+      color: #1ce805;
+      font-size: 40px;
+      font-weight: bold;
       margin: 20px 0;
     }
     .status-message {
@@ -86,18 +91,20 @@
       text-align: center;
     }
     .success {
-      background-color: #dff0d8;
-      color: #3c763d;
+     /* background-color: #dff0d8;*/
+      font-size: 61px;
+      font-weight: bold;
+      color: #f5d906
     }
     .error {
       background-color: #f2dede;
       color: #a94442;
     }
     .name-counter {
-      font-size: 18px;
-      color: #333;
+      font-size: 61px;
+      color: #f5d906;
       padding: 10px 15px;
-      background: rgba(255,255,255,0.9);
+     /* background: rgba(255,255,255,0.9); */
       border-radius: 10px;
     }
     .top-bar-section {
@@ -130,9 +137,60 @@
     .button {
       border-radius: 0;
     }
+    #go {
+      background: transparent !important;
+      border: 0;
+      color: #1ce805;
+      font-size: 60px;
+      font-weight: bold;
+      box-shadow: none;
+      transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+    }
+    #go:hover,
+    #go:focus,
+    #go:active {
+      background: transparent !important;
+      opacity: 0.75;
+      transform: scale(1.05);
+    }
     .alert.button {
       border-radius: 10px !important;
     }
+    .remove-name-btn svg {
+      display: block;
+      width: 24px;
+      height: 24px;
+    }
+    #result1 .extra {
+      margin-top: -75px;
+    }
+    .resetter {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 30;
+      font-size: 40px;
+      font-weight: bold;
+      color: #f5d906;
+      padding: 10px 15px;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+    }
+    .resetter:hover,
+    .resetter:focus,
+    .resetter:active {
+      background: transparent;
+      opacity: 0.75;
+      transform: scale(1.05);
+    }
+
+
+
+
     @media (max-width: 768px) {
       .top-bar-section {
         flex-direction: column;
@@ -168,22 +226,23 @@
     <div class="large-12 columns" style="padding-top:50px;z-index:20;">
       <div class="top-bar-section">
         <ul class="button-group even-3">
-          <li><button class="success button" id="go" onclick="go();">PICK NAME</button></li>
-          <li><button class="warning button" id="resetAll" onclick="resetAllNames();">RESET ALL NAMES</button></li>
-          <li><a href="https://github.com/telezoic/random-name-picker/blob/gh-pages/names.js" class="button" id="editSource" target="_blank">VIEW NAMES</a></li>
+          <li><button class="success button" id="go" onclick="go();">SPIN!</button></li>
+          <!-- <li><a href="https://github.com/telezoic/random-name-picker/blob/gh-pages/names.js" class="button" id="editSource" target="_blank">VIEW NAMES</a></li> -->
         </ul>
         <div class="name-counter">
-          Available: <strong id="availableCount">0</strong> | Removed: <strong id="removedCount">0</strong>
+          <strong id="availableCount">0</strong> |  <strong id="removedCount">0</strong>
         </div>
       </div>
     </div>
   </div>
   
+  <button class="resetter" id="resetAll" onclick="resetAllNames();">RESET</button>
+
   <div class="row">
     <div class="large-12 columns">
       <h3 style="text-align:center;margin-top:5px;" id="headline"></h3>
       
-      <div class="loading" id="loading">Loading names...</div>
+      <div class="loading" id="loading"></div>
       <div id="status-message"></div>
 
       
@@ -191,39 +250,29 @@
     </div>
   </div>
   
-  <!-- Load master names from external JavaScript file -->
-  <script src="names.js"></script>
-  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.7.5/js/foundation.min.js"></script>
   <script>
     $(document).foundation();
     
     let text = '';
     let names = [];
-    let removedNames = [];
+    let totalNames = 0;
 
     // Initialize the app
     $(document).ready(function() {
       loadNames();
     });
 
-    // Load names with persistence
-    function loadNames() {
+    // Load the current names from the server
+    async function loadNames() {
       showLoading(true);
       clearStatus();
       
       try {
-        const savedRemoved = localStorage.getItem('namePickerRemoved');
-        removedNames = savedRemoved ? JSON.parse(savedRemoved) : [];
-        
-        names = masterNames.filter(name => !removedNames.includes(name));
-        updateCounts();
-        
+        const state = await requestJson('/api/names');
+        updateNameState(state);
       } catch (error) {
-        console.error('Error loading names:', error);
-        names = [...masterNames];
-        removedNames = [];
-        updateCounts();
+        showStatus(error.message, 'error');
       } finally {
         showLoading(false);
       }
@@ -232,38 +281,46 @@
     // Update the counts display
     function updateCounts() {
       $('#availableCount').text(names.length);
-      $('#removedCount').text(removedNames.length);
+      $('#removedCount').text(Math.max(totalNames - names.length, 0));
     }
 
-    // Save removed names to localStorage
-    function saveRemovedNames() {
-      localStorage.setItem('namePickerRemoved', JSON.stringify(removedNames));
+    function updateNameState(state) {
+      names = state.names;
+      totalNames = state.total;
+      updateCounts();
     }
 
-    // Reset all names 
-    function resetAllNames() {
-      removedNames = [];
-      saveRemovedNames();
-      loadNames();
-      //showStatus('All names reset!', 'success');
-    }
-
-    // Randomize array order
-    function randOrd() {
-      return (Math.round(Math.random()) - 0.5);
-    }
-
-    // random name function
-    function getRandomName() {
-      if (names.length === 0) {
-        return null;
+    async function requestJson(path, options = {}) {
+      const response = await fetch(path, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers,
+        },
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || 'The request could not be completed.');
       }
-      const randomIndex = Math.floor(Math.random() * names.length);
-      return names[randomIndex];
+      return result;
     }
+
+    // Reset names from the backup object in MinIO
+    async function resetAllNames() {
+      $('#resetAll').prop('disabled', true);
+      try {
+        updateNameState(await requestJson('/api/reset', { method: 'POST' }));
+        showStatus('ALL NAMES RESTORED', 'success');
+      } catch (error) {
+        showStatus(error.message, 'error');
+      } finally {
+        $('#resetAll').prop('disabled', false);
+      }
+    }
+
     function go() {
       if (names.length === 0) {
-        showStatus('No names available! Reset to add all names back.', 'error');
+        showStatus('No names available!', 'error');
         return;
       }
       
@@ -280,28 +337,29 @@
       $("div").remove(".name");
       $("div").remove(".extra");
       
-      const newtop = names.length * 200 * -1;
+      const shuffledNames = [...names];
+      for (let i = shuffledNames.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledNames[i], shuffledNames[j]] = [shuffledNames[j], shuffledNames[i]];
+      }
+
+      const newtop = shuffledNames.length * 200 * -1;
       $('#values').css({top: + newtop});
-      
-      names.sort(randOrd);
-      
+
       // Create name elements
-      for(let i in names) {
-        if (names[i] === "" || typeof(names[i]) === "undefined") {
-          count = count - 1;
-        } else {
-          const name = names[i];
-          $('#values').append('<div id=result'+count+' class=name>'+name+'</div>');
-        }
+      for (const name of shuffledNames) {
+        $('#values').append($('<div>', {
+          id: `result${count}`,
+          class: 'name',
+          text: name,
+        }));
         count = count + 1;
       }
       
       // Add two more sets for smooth animation
       for(let i = 0; i < 2; i++) {
-        for(let name of names) {
-          if (name && name.trim() !== '') {
-            $('#values').append('<div class=name>'+name+'</div>');
-          }
+        for (const name of shuffledNames) {
+          $('#values').append($('<div>', { class: 'name', text: name }));
         }
       }
       
@@ -320,7 +378,7 @@
       $('#result1').animate({height: '+=55px'});
       
       // Use event delegation for the remove button
-      $('#result1').append('<div class="extra"><a class="small alert button remove-name-btn" href="#">Remove Name</a></div>');
+      $('#result1').append('<div class="extra"><a class="small alert button remove-name-btn" href="#" aria-label="Remove selected name" title="Remove selected name"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m5 4v6m4-6v6"/></svg></a></div>');
       
       $('#go').removeAttr('disabled');
       $('#headline').text('');
@@ -328,21 +386,21 @@
     }
     
     // Remove name (persistent)
-    function removevictim() {
-      if (!removedNames.includes(text)) {
-        removedNames.push(text);
-        saveRemovedNames();
+    async function removevictim() {
+      $('.remove-name-btn').prop('disabled', true);
+      try {
+        updateNameState(await requestJson('/api/remove', {
+          method: 'POST',
+          body: JSON.stringify({ name: text }),
+        }));
+        $('#result1').text('Removed');
+        $('#result1').delay(2000).fadeOut(1000, function() {
+          $('#values').empty();
+        });
+      } catch (error) {
+        showStatus(error.message, 'error');
+        $('.remove-name-btn').prop('disabled', false);
       }
-      
-      loadNames();
-      
-      $('#result1').html("Removed");
-      $('#result1').fadeOut(1000, function() {
-        $("div").remove("#result1");
-      });
-      $("div").remove(".name");
-      $("div").remove(".extra");
-     // $('#headline').text('Name removed! Reset to restore.');
     }
 
     // Use event delegation for dynamically created remove buttons
@@ -357,7 +415,9 @@
     }
     
     function showStatus(message, type) {
-      $('#status-message').html(`<div class="status-message ${type}">${message}</div>`);
+      $('#status-message').empty().append(
+        $('<div>', { class: `status-message ${type}`, text: message })
+      );
       if (type === 'success') {
         setTimeout(clearStatus, 3000);
       }
